@@ -1,8 +1,7 @@
-package com.hoho.selectionsort;
+package com.hoho.algorithms.basesort;
 
-import com.hoho.common.Student;
-
-import java.nio.channels.Selector;
+import com.hoho.algorithms.api.ArrayGenerator;
+import com.hoho.algorithms.api.SortingHelper;
 
 /**
  * 选择排序
@@ -19,7 +18,9 @@ public class SelectionSort {
             //选择arr[i...n)中最小值的索引
             int minIndex = i;
             for (int j = i; j < arr.length; j++) {
-                if (arr[j].compareTo(arr[minIndex]) < 0) {
+                E a = (E) arr[j];
+                E b = (E) arr[minIndex];
+                if (a.compareTo(b) < 0) {
                     minIndex = j;
                 }
             }
@@ -35,17 +36,11 @@ public class SelectionSort {
 
 
     public static void main(String[] args) {
-        Integer[] arr = {1, 5, 7, 4, 6, 9};
-        SelectionSort.sort(arr);
-        for (int i : arr) {
-            System.out.print(i + "\t");
+        int[] dataSize = {10000,100000};
+        for (int n : dataSize) {
+            Integer[] data = ArrayGenerator.generateRandomArray(n,n);
+            SortingHelper.sortTest(SelectionSort.class,"sort", data);
         }
-        System.out.println();
 
-        Student[] students = {new Student("Alice", 22), new Student("Bobo", 18), new Student("Jack", 33)};
-        SelectionSort.sort(students);
-        for (Student student : students) {
-            System.out.println(student);
-        }
     }
 }

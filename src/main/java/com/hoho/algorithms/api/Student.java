@@ -1,4 +1,4 @@
-package com.hoho.common;
+package com.hoho.algorithms.api;
 
 public class Student implements Comparable<Student> {
     private String name;

@@ -1,4 +1,6 @@
-package com.hoho.linnersearch;
+package com.hoho.algorithms.basesearch;
+
+import com.hoho.algorithms.api.ArrayGenerator;
 
 /**
  * 线性查找法
