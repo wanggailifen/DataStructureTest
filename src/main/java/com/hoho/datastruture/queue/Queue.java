@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 
 public interface Queue<E> {
     void enqueue(E e);
-    E deque();
+    E dequeue();
     E getFront();
     int getSize();
     boolean isEmpty();

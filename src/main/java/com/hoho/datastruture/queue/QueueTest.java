@@ -15,7 +15,7 @@ public class QueueTest {
             queue.enqueue(random.nextInt(Integer.MAX_VALUE));
         }
         for (int i = 0; i < opCount; i++) {
-            queue.deque();
+            queue.dequeue();
         }
         long endTime = System.nanoTime();
 
