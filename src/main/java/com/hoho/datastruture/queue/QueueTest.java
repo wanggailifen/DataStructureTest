@@ -3,6 +3,7 @@ package com.hoho.datastruture.queue;
 import com.hoho.datastruture.array.Array;
 
 import java.sql.SQLOutput;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class QueueTest {
@@ -33,6 +34,9 @@ public class QueueTest {
         double time2 = testQueue(loopQueue, opCount);
         System.out.println("loopQueue,time: " + time2 + "s");
 
+        LinkedListQueue<Integer> linkedListQueue = new LinkedListQueue<>();
+        double time3 = testQueue(linkedListQueue, opCount);
+        System.out.println("loopQueue,time: " + time3 + "s");
 
     }
 }

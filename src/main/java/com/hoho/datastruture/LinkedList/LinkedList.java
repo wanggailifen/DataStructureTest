@@ -1,10 +1,5 @@
 package com.hoho.datastruture.LinkedList;
 
-import com.sun.xml.internal.bind.marshaller.NoEscapeHandler;
-import sun.tools.tree.ForStatement;
-import sun.tools.tree.NewArrayExpression;
-
-import javax.xml.soap.Node;
 
 /**
  * 链表
@@ -70,8 +65,19 @@ public class LinkedList<E> {
         }
         //插入新的节点
         prev.next = new Node(e, prev.next);
+
         size++;
     }
+
+//    //在以node为头结点的链表中的index位置添加元素e；递归
+//    public Node add(Node node, int index, E e) {
+//
+//        if (index == 0) {
+//            return new Node(e, node);
+//        }
+//        node.next = add(node.next, index - 1, e);
+//        return node;
+//    }
 
     public void addLast(E e) {
         add(size, e);
@@ -135,11 +141,12 @@ public class LinkedList<E> {
         return retNode.e;
     }
 
-    public E removeFirst(){
+    public E removeFirst() {
         return remove(0);
     }
-    public E removeLast(){
-        return remove(size-1);
+
+    public E removeLast() {
+        return remove(size - 1);
     }
 
     @Override
