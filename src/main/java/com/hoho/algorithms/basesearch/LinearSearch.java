@@ -34,9 +34,5 @@ public class LinearSearch {
         double time = (end - start) / 1000000.0;
         System.out.println("100次耗时" + time + "ms");
 
-
-//        Student[] students = {new Student("Alice"), new Student("Bobo"), new Student("Jack")};
-//        int index3 = LinearSearch.search(students, new Student("Bobo"));
-//        System.out.println(index3);
     }
 }
