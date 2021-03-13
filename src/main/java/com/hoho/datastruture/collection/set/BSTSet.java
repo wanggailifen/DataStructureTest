@@ -1,9 +1,6 @@
-package com.hoho.datastruture.collection;
+package com.hoho.datastruture.collection.set;
 
 import com.hoho.datastruture.tree.BST;
-
-import javax.net.ssl.SSLServerSocket;
-import java.io.File;
 
 public class BSTSet<E extends Comparable<E>> implements Set<E> {
     private BST<E> bst;

@@ -1,8 +1,9 @@
-package com.hoho.datastruture.collection;
+package com.hoho.datastruture.collection.set;
 
 import com.hoho.datastruture.LinkedList.LinkedList;
+import com.hoho.datastruture.collection.set.Set;
 
-public class LinkedListSet<E> implements Set<E>{
+public class LinkedListSet<E> implements Set<E> {
 
     private LinkedList<E> list;
 

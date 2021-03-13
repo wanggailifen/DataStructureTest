@@ -1,4 +1,4 @@
-package com.hoho.datastruture.collection;
+package com.hoho.datastruture.collection.set;
 
 public interface Set<E>{
     void add(E e);
