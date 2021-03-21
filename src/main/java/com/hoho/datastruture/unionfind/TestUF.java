@@ -27,6 +27,10 @@ public class TestUF {
         UnionFind5 uf5 = new UnionFind5(size);
         double uf5test = testUF(uf5, m);
         System.out.println("uf5test = " + uf5test);
+
+        UnionFind6 uf6 = new UnionFind6(size);
+        double uf6test = testUF(uf6, m);
+        System.out.println("uf6test = " + uf6test);
     }
 
     private static double testUF(UF uf, int m) {

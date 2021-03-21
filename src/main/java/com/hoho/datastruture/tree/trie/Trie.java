@@ -1,4 +1,4 @@
-package com.hoho.datastruture.tree;
+package com.hoho.datastruture.tree.trie;
 
 import java.util.TreeMap;
 

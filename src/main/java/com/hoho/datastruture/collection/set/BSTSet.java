@@ -1,6 +1,6 @@
 package com.hoho.datastruture.collection.set;
 
-import com.hoho.datastruture.tree.BST;
+import com.hoho.datastruture.tree.BST.BST;
 
 public class BSTSet<E extends Comparable<E>> implements Set<E> {
     private BST<E> bst;

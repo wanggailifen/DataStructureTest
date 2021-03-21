@@ -1,32 +1,73 @@
-package com.hoho.datastruture.tree;
+package com.hoho.datastruture.tree.AVLTree;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
-public class BST<E extends Comparable<E>> {
+public class AVLTree<K extends Comparable<K>, V> {
 
-    public BST() {
-
+    public AVLTree() {
     }
 
     private class Node {
-        public E e;
+        public K key;
+        public V value;
         public Node left, right;
+        public int height;
 
-        public Node(E e) {
-            this.e = e;
+        public Node(K key, V value) {
+            this.key = key;
+            this.value = value;
             this.left = null;
             this.right = null;
+            this.height = 1;
         }
     }
 
     private Node root;
     private int size;
 
-    public BST(Node root, int size) {
+    public AVLTree(Node root, int size) {
         this.root = root;
         this.size = size;
     }
+
+    // 判断当前树是不是二分搜索树
+    public boolean isBST() {
+        ArrayList<K> keys = new ArrayList<>();
+        inOrder(root, keys);
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i - 1).compareTo(keys.get(i)) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void inOrder(Node node, ArrayList<K> keys) {
+        if (node == null) {
+            return;
+        }
+        //按中序遍历放到list中
+        inOrder(node.left, keys);
+        keys.add(node.key);
+        inOrder(node.right, keys);
+    }
+
+
+    private Boolean isBalanced(Node node) {
+        if (node == null) {
+            return true;
+        }
+        int balanceFactor = getBalanceFactor(node);
+        if (Math.abs(balanceFactor) > 1) {
+            return false;
+        }
+        return isBalanced(node.left) && isBalanced(node.right);
+    }
+
 
     public int getSize() {
         return size;
@@ -36,43 +77,116 @@ public class BST<E extends Comparable<E>> {
         return size == 0;
     }
 
-    public void add(E e) {
-        root = add(root, e);
+    private int getHeight(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
     }
 
-    private Node add(Node node, E e) {
+    private int getBalanceFactor(Node node) {
+        if (node != null) {
+            return 0;
+        }
+        return getHeight(node.left) - getHeight(node.right);
+    }
+
+    public void add(K key, V value) {
+        root = add(root, key, value);
+    }
+
+    private Node add(Node node, K key, V value) {
         if (node == null) {
             size++;
-            return new Node(e);
+            return new Node(key, value);
         }
-        if (e.compareTo(node.e) < 0) {
-            node.left = add(node.left, e);
-        } else if (e.compareTo(node.e) > 0) {
-            node.right = add(node.right, e);
+        if (key.compareTo(node.key) < 0) {
+            node.left = add(node.left, key, value);
+        } else if (key.compareTo(node.key) > 0) {
+            node.right = add(node.right, key, value);
+        } else {
+            node.value = value;
+        }
+        //更新Height
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        //计算平衡因子
+        int balanceFactor = getBalanceFactor(node);
+
+        //1.LL维护平衡性
+        if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0) {
+            //不平衡的原因是左侧的左侧多了节点的情况
+            //右旋转
+            return rightRotate(node);
+        }
+
+        //2.RR维护平衡性
+        if (balanceFactor < -1 && getBalanceFactor(node.left) < 0) {
+            //不平衡的原因是右侧的右侧多了节点的情况
+            //左旋转
+            return rightRotate(node);
+        }
+
+        //3.LR维护平衡性
+        if (balanceFactor > 1 && getBalanceFactor(node.left) < 0) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+
+        //4.RL维护平衡性
+        if (balanceFactor < -1 && getBalanceFactor(node.left) > 0) {
+            node.right = rightRotate(node.right);
+            return rightRotate(node);
         }
         return node;
     }
 
-    /**
-     * 判断e是否在树种
-     *
-     * @param e
-     * @return
-     */
-    public Boolean contains(E e) {
-        return contains(root, e);
+    //对原来的父节点y进行右旋转操作，返回旋转后的根节点x
+    private Node rightRotate(Node y) {
+        Node x = y.left;
+        //原来的左孩子节点的右孩子
+        Node oldXRight = x.right;
+        x.right = y;
+        y.left = oldXRight;
+
+        y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+
+        return x;
     }
 
-    private Boolean contains(Node node, E e) {
+    private Node leftRotate(Node y) {
+        Node x = y.right;
+        //原来的左孩子节点的右孩子
+        Node oldXLeft = x.left;
+        x.left = y;
+        y.left = oldXLeft;
+
+        y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+
+        return x;
+    }
+
+    /**
+     * 判断e是否在树中
+     *
+     * @param key
+     * @return
+     */
+    public Boolean contains(K key) {
+        return contains(root, key);
+    }
+
+    private Boolean contains(Node node, K key) {
         if (node == null) {
             return false;
         }
-        if (e.compareTo(node.e) == 0) {
+        if (key.compareTo(node.key) == 0) {
             return true;
-        } else if (e.compareTo(node.e) < 0) {
-            return contains(node.left, e);
+        } else if (key.compareTo(node.key) < 0) {
+            return contains(node.left, key);
         } else {
-            return contains(node.right, e);
+            return contains(node.right, key);
         }
     }
 
@@ -87,7 +201,7 @@ public class BST<E extends Comparable<E>> {
         if (node == null) {
             return;
         }
-        System.out.println(node.e);
+        System.out.println(node.key);
         preOrder(node.left);
         preOrder(node.right);
     }
@@ -101,7 +215,7 @@ public class BST<E extends Comparable<E>> {
 
         while (!stack.isEmpty()) {
             Node cur = stack.pop();
-            System.out.println(cur.e);
+            System.out.println(cur.key);
             if (cur.right != null) {
                 stack.push(cur.right);
             }
@@ -124,7 +238,7 @@ public class BST<E extends Comparable<E>> {
             return;
         }
         inOrder(node.left);
-        System.out.println(node.e);
+        System.out.println(node.key);
         inOrder(node.right);
     }
 
@@ -142,7 +256,7 @@ public class BST<E extends Comparable<E>> {
         }
         postOrder(node.left);
         postOrder(node.right);
-        System.out.println(node.e);
+        System.out.println(node.key);
     }
 
     /**
@@ -153,7 +267,7 @@ public class BST<E extends Comparable<E>> {
         queue.add(root);
         while (!queue.isEmpty()) {
             Node cur = queue.remove();
-            System.out.println(cur.e);
+            System.out.println(cur.key);
             if (cur.left != null) {
                 queue.add(cur.left);
             }
@@ -166,12 +280,12 @@ public class BST<E extends Comparable<E>> {
     /**
      * 寻找最小元素
      */
-    public E minimum() {
+    public K minimum() {
         if (size == 0) {
             throw new IllegalArgumentException("树为空");
         }
         Node node = minimum(root);
-        return minimum(root).e;
+        return minimum(root).key;
     }
 
     private Node minimum(Node node) {
@@ -184,8 +298,8 @@ public class BST<E extends Comparable<E>> {
     /**
      * 删除最小元素
      */
-    public E removeMin() {
-        E ret = minimum();
+    public K removeMin() {
+        K ret = minimum();
         root = removeMin(root);
         return ret;
     }
@@ -211,12 +325,12 @@ public class BST<E extends Comparable<E>> {
     /**
      * 寻找最大元素
      */
-    public E maximum() {
+    public K maximum() {
         if (size == 0) {
             throw new IllegalArgumentException("树为空");
         }
         Node node = maximum(root);
-        return maximum(root).e;
+        return maximum(root).key;
     }
 
     private Node maximum(Node node) {
@@ -229,8 +343,8 @@ public class BST<E extends Comparable<E>> {
     /**
      * 删除最大元素
      */
-    public E removeMax() {
-        E ret = maximum();
+    public K removeMax() {
+        K ret = maximum();
         root = removeMax(root);
         return ret;
     }
@@ -256,22 +370,22 @@ public class BST<E extends Comparable<E>> {
     /**
      * 从二分搜索树中删除元素为e的节点
      *
-     * @param e
+     * @param key
      */
-    public void remove(E e) {
-        root = remove(root, e);
+    public void remove(K key) {
+        root = remove(root, key);
 
     }
 
-    private Node remove(Node node, E e) {
+    private Node remove(Node node, K key) {
         if (node == null) {
             return null;
         }
-        if (e.compareTo(node.e) < 0) {
-            node.left = remove(node.left, e);
+        if (key.compareTo(node.key) < 0) {
+            node.left = remove(node.left, key);
             return node;
-        } else if (e.compareTo(node.e) > 0) {
-            node.right = remove(node.right, e);
+        } else if (key.compareTo(node.key) > 0) {
+            node.right = remove(node.right, key);
             return node;
         } else {
             //相等
@@ -306,9 +420,6 @@ public class BST<E extends Comparable<E>> {
     }
 
 
-
-
-
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder();
@@ -321,7 +432,7 @@ public class BST<E extends Comparable<E>> {
             res.append(generateDepthString(depth) + "null\n");
             return;
         }
-        res.append(generateDepthString(depth) + node.e + "\n");
+        res.append(generateDepthString(depth) + node.key + "\n");
         generateBSTString(node.left, depth + 1, res);
         generateBSTString(node.right, depth + 1, res);
 
@@ -337,14 +448,6 @@ public class BST<E extends Comparable<E>> {
 
 
     public static void main(String[] args) {
-        BST<Integer> bst = new BST<>();
-        int[] nums = {5, 3, 6, 8, 4, 2};
-        for (int num : nums) {
-            bst.add(num);
-        }
-        bst.inOrder();
-        bst.remove(6);
-        System.out.println("---------");
-        bst.inOrder();
+
     }
 }
